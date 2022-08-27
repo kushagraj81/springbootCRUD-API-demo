@@ -1,0 +1,1 @@
+INSERT INTO dog (uid,name,breed) VALUES ('ec50c0d8-2cdb-47c7-a366-932fe9fcbe3f','Saurabh','shukla');
