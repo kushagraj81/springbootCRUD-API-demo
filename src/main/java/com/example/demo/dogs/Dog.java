@@ -15,27 +15,27 @@ public class Dog {
 @Column(columnDefinition = "uuid", updatable = false)
 @GeneratedValue(generator = "uuid2")
 @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID uid;
+    private UUID id;
     private String name;
     private String breed;
 
     @Override
     public String toString() {
         return "Dog{" +
-                "id=" + uid +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", breed='" + breed + '\'' +
                 '}';
     }
 
     public UUID getId() {
-        return uid;
+        return id;
     }
 
 
 
     public void setId(UUID id) {
-        this.uid = id;
+        this.id = id;
     }
 
     public String getName() {
