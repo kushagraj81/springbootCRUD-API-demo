@@ -1,10 +1,13 @@
 package com.example.demo.dogs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +62,13 @@ public class DogsController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    //Paging implementation
+    @GetMapping("/dogs/{pageNo}/{pageSize}")
+    public ResponseEntity<List<Dog>> getDogById(@PathVariable int pageNo,@PathVariable int pageSize) {
+        PageRequest paging = PageRequest.of(pageNo, pageSize);
+        Page<Dog> pagedResult = obj.findAll(paging);
+        return new ResponseEntity<>(pagedResult.toList(), HttpStatus.OK);
+    }
     @PostMapping("/dogs")
     public ResponseEntity<Dog> createDog(@RequestBody Dog tutorial) {
         try {
@@ -70,7 +80,7 @@ public class DogsController {
         }
     }
     @PutMapping("/dogs/{id}")
-    public ResponseEntity<Dog> updateDog(@PathVariable("id") long id, @RequestBody Dog tutorial) {
+    public ResponseEntity<Dog> updateDog(@PathVariable("id") UUID id, @RequestBody Dog tutorial) {
         Optional<Dog> tutorialData = obj.findById(id);
         if (tutorialData.isPresent()) {
             Dog _tutorial = tutorialData.get();
@@ -82,20 +92,36 @@ public class DogsController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/dogs/{id}")
-    public ResponseEntity<HttpStatus> deleteDog(@PathVariable("id") long id) {
-        try {
-            obj.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @DeleteMapping("/dogs/{id}")
+//    public ResponseEntity<HttpStatus> deleteDog(@PathVariable("id") long id) {
+//        try {
+//            obj.deleteById(id);
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
     @DeleteMapping("/dogs")
     public ResponseEntity<HttpStatus> deleteAllDogs() {
         try {
             obj.deleteAll();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/dogs/{id}")
+    public ResponseEntity<HttpStatus> deleteAllDogs(@PathVariable("id") UUID id) {
+        try {
+        Optional<Dog> tutorialData = obj.findById(id);
+        if (tutorialData.isPresent()) {
+            System.out.println("hi1");
+            obj.deleteById(id);
+            System.out.println("hi2");
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
